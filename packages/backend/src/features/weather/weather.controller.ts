@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query, UseGuards } from '@nestjs/common';
 import { WeatherService } from 'src/features/weather/weather.service';
 import { VerifyClothesDto } from './dtos/verify-clothes-body.dto';
 import { ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
@@ -30,12 +22,8 @@ export class WeatherController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @Get('weather/recommendation')
   @HttpCode(200)
-  async getWeatherImageAndRecommendationByLocation(
-    @Query() query: GetWeatherRecommendationQueryDto,
-  ): Promise<GetWeatherRecommendationResponseDto> {
-    return await this.weatherService.getWeatherImageAndRecommendationByLocation(
-      query,
-    );
+  async getWeatherImageAndRecommendationByLocation(@Query() query: GetWeatherRecommendationQueryDto): Promise<GetWeatherRecommendationResponseDto> {
+    return await this.weatherService.getWeatherImageAndRecommendationByLocation(query);
   }
 
   @ApiResponse({
@@ -46,9 +34,7 @@ export class WeatherController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   @Post('weather/verify')
   @HttpCode(200)
-  async verifyPersonImageIsSuitableForWeather(
-    @Body() dto: VerifyClothesDto,
-  ): Promise<VerifyClothesResponseDto> {
+  async verifyPersonImageIsSuitableForWeather(@Body() dto: VerifyClothesDto): Promise<VerifyClothesResponseDto> {
     return await this.weatherService.verifyClothesIsSuitableForWeather(dto);
   }
 }

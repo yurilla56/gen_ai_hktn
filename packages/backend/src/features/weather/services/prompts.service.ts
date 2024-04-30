@@ -18,12 +18,12 @@ export class PromptsService {
     `;
   }
 
-  getVerifyClothesIsSuitableForWeatherPrompt(recommendation: string): string {
+  getClothIsPresentInImagePrompt(cloth: string): string {
     return `
-      - Verify that clothes is suitable for provided weather recommendations: ${recommendation}
+      - Verify if provided cloth is present in the image: ${cloth}
       - You MUST not use any markup language in your response.
-      - Your response should be an ordinary text.
-      - Your response should be either 'PASS' or 'FAIL'.
+      - Analogues of the cloth are also considered as a match.
+      - Your response should be either 'YES' or 'NO'.
     `;
   }
 
@@ -31,6 +31,8 @@ export class PromptsService {
     return `
       - Generate clothes suitable for provided weather: ${weather}
       - You MUST not use any markup language in your response.
+      - Use abstract names for clothes, e.g. 'jacket', 't-shirt', 'shorts', 'sunhat'.
+      - You MUST not include any optional information.
       - Your response MUST be a list of clothes separated by new line.
     `;
   }

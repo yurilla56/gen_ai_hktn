@@ -1,3 +1,9 @@
+export interface IWeather {
+  description: string;
+  temperature: number;
+  emojis: string;
+}
+
 export interface IOpenWeatherMapResponse {
   coord: {
     lon: number;

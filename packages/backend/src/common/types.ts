@@ -1,3 +1,5 @@
+import { IWeather } from '../integrations/open-weather-map/types';
+
 export enum Verification {
   PASS = 'PASS',
   FAIL = 'FAIL',
@@ -14,12 +16,12 @@ export interface IVerificationResult {
 }
 
 export interface IVerifyClothes {
-  recommendation: string;
-  image: string;
+  readonly clothes: string[];
+  readonly image: string;
 }
 
 export interface IWeatherAndRecommendation {
-  weather: string;
+  weather: IWeather;
   recommendation: string;
   clothes: string[];
   image: string;
