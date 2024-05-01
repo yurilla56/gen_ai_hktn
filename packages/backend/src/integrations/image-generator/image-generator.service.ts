@@ -13,9 +13,7 @@ export class ImageGeneratorService {
       throw new Error('Image generator is not implemented yet');
     }
 
-    const file = await fs.readFile(
-      join(__dirname, '../../../assets/weather-dumb.jpg'),
-    );
+    const file = await fs.readFile(join(__dirname, '../../../assets/weather-dumb.jpg'));
     return file.toString('base64');
   }
 }
