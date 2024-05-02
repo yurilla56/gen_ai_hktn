@@ -19,22 +19,15 @@ export class StableDiffusionService {
   }
 
   async predictImages(prompt: string): Promise<string> {
-    const parameters: IValue = {
-      structValue: {
-        fields: {
-          height: { numberValue: 1024 },
-          width: { numberValue: 1024 },
-          num_inference_steps: { numberValue: 50 },
-          guidance_scale: { numberValue: 7.5 },
-          seed: { numberValue: 123 },
-        },
-      },
-    };
-
     const instances: IValue[] = [
       {
         structValue: {
           fields: {
+            height: { numberValue: 1024 },
+            width: { numberValue: 1024 },
+            num_inference_steps: { numberValue: 50 },
+            guidance_scale: { numberValue: 7.5 },
+            seed: { numberValue: 123 },
             prompt: { stringValue: prompt },
           },
         },
@@ -45,7 +38,6 @@ export class StableDiffusionService {
       const response = await this.predictionServiceClient.predict({
         instances,
         endpoint: `projects/${this.config.get<string>('PROJECT')}/locations/${this.config.get<string>('LOCATION')}/endpoints/${this.config.get<string>('ENDPOINT_NAME')}`,
-        parameters,
       });
 
       const base64Images: string[] = response[0].predictions.map((prediction) => prediction.stringValue);
