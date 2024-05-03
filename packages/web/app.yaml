@@ -1,4 +1,4 @@
-runtime: nodejs10
+runtime: nodejs18
 handlers:
   # Serve all static files with urls ending with a file extension
 - url: /(.*\..+)$ 
@@ -8,3 +8,7 @@ handlers:
 - url: /.*
   static_files: dist/index.html
   upload: dist/index.html
+
+env_variables:
+  VUE_APP_X_API_KEY: epm$123
+  VUE_APP_GEO_API_KEY: AIzaSyBTy8revqQLNiIK4iwm_e5DG9BNPnbWN5U
