@@ -42,6 +42,7 @@
     </div>
     <div v-else class="start-page">
       <img alt="Bomboloo" src="../../assets/images/start-logo.svg" />
+      <img alt="loading" src="../../assets/images/spinner.gif" />
       <div class="app-description" @click="showHome">child AI assistant</div>
     </div>
   </div>

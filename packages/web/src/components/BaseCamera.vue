@@ -62,12 +62,16 @@ const toggleCamera = () => {
 }
 
 const takePhoto = () => {
-    isPhotoTaken.value = !isPhotoTaken.value;
-    const context = canvas.value.getContext('2d');
-    const photoFromVideo = camera.value;
-    context.drawImage(photoFromVideo, 0, 0, 450, 337);
-    imageData.value = canvas.value.toDataURL().split(',');
-    emit('sendImageData', imageData.value[1]);
+    if (isCameraOpen.value) {
+        isPhotoTaken.value = !isPhotoTaken.value;
+        const context = canvas.value.getContext('2d');
+        const photoFromVideo = camera.value;
+        context.drawImage(photoFromVideo, 0, 0, 450, 337);
+        imageData.value = canvas.value.toDataURL().split(',');
+        emit('sendImageData', imageData.value[1]);
+    } else {
+        alert('First open your camera')
+    }
 }
 </script>
   
