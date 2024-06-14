@@ -1,0 +1,54 @@
+[
+  {
+    "topic": "cooking",
+    "title": "How to cook pizza?",
+    "imageEncoded": "fill in here",
+    "answers": [
+      { "id": 1, "text": "Basil", "imageEncoded": "fill in here" },
+      { "id": 2, "text": "Cheese", "imageEncoded": "fill in here" },
+      { "id": 3, "text": "Tomatoes", "imageEncoded": "fill in here" },
+      { "id": 4, "text": "Umbrella", "imageEncoded": "fill in here" }
+    ],
+    "correctAnswers": [1, 2, 3],
+    "wrongAnswers": [4]
+  },
+  {
+    "topic": "ocean",
+    "title": "What creature has eight legs and lives underwater?",
+    "imageEncoded": "fill in here",
+    "answers": [
+      { "id": 1, "text": "Jellyfish", "imageEncoded": "fill in here" },
+      { "id": 2, "text": "Seahorse", "imageEncoded": "fill in here" },
+      { "id": 3, "text": "Shark", "imageEncoded": "fill in here" },
+      { "id": 4, "text": "Octopus", "imageEncoded": "fill in here" }
+    ],
+    "correctAnswers": [4],
+    "wrongAnswers": [1, 2, 3]
+  },
+  {
+    "topic": "insects",
+    "title": "Which insect can change from a caterpillar into a colorful flying creature?",
+    "imageEncoded": "fill in here",
+    "answers": [
+      { "id": 1, "text": "Bee", "imageEncoded": "fill in here" },
+      { "id": 2, "text": "Ant", "imageEncoded": "fill in here" },
+      { "id": 3, "text": "Butterfly", "imageEncoded": "fill in here" },
+      { "id": 4, "text": "Fly", "imageEncoded": "fill in here" }
+    ],
+    "correctAnswers": [3],
+    "wrongAnswers": [1, 2, 4]
+  },
+  {
+    "topic": "colors",
+    "title": "What color do you get when you mix red and yellow?",
+    "imageEncoded": "fill in here",
+    "answers": [
+      { "id": 1, "text": "Green", "imageEncoded": "fill in here" },
+      { "id": 2, "text": "Purple", "imageEncoded": "fill in here" },
+      { "id": 3, "text": "Orange", "imageEncoded": "fill in here" },
+      { "id": 4, "text": "Blue", "imageEncoded": "fill in here" }
+    ],
+    "correctAnswers": [3],
+    "wrongAnswers": [1, 2, 4]
+  }
+]
