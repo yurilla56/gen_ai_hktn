@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useGeolocationStore } from './geolocation';
-import { testAvatar } from '../assets/images/testAvatar'
+import { fallbackAvatar } from '../assets/images/fallbackAvatar'
 
 const apiKey = process.env.VUE_APP_X_API_KEY;
 
@@ -40,26 +40,36 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       return await response.json();
     },
     async requestWeather() {
-      let clothesRetrieved = false;
-      let data;
+      // let clothesRetrieved = false;
+      // let data;
 
-      while (!clothesRetrieved) {
-        try {
-          data = await this.fetchWeatherRecommendation();
+      // while (!clothesRetrieved) {
+      //   try {
+      //     // data = await this.fetchWeatherRecommendation();
 
-          if (data.clothes.length > 0) {
-            clothesRetrieved = true;
-          }
-        } catch (error) {
-          console.error('Error fetching weather recommendation:', error);
-        }
-      }
+      //     if (data.clothes.length > 0) {
+      //       clothesRetrieved = true;
+      //     }
+      //   } catch (error) {
+      //     console.error('Error fetching weather recommendation:', error);
+      //   }
+      // }
 
-      this.weather.description = data.weather.description;
+      const data = {
+        clothes: ['shorts', 't-shirt', 'sunhat', 'sunglasses'],
+        weather: {
+          description: 'clear sky',
+          temperature: 22.97,
+          emojis: '☀️'
+        },
+        recommendation: 'You should wear a t-shirt and shorts, and don\'t forget your sunglasses and sunhat!',
+      };
+
+      this.weather.description = data.weather.description ?? 'clear sky';
       this.weather.temperature = data.weather.temperature + '°C';
       this.weather.emojis = data.weather.emojis;
       // this.image = data.image;
-      this.image = testAvatar;
+      this.image = fallbackAvatar;
       this.clothes = data.clothes;
       this.recommendation = data.recommendation;
     },
