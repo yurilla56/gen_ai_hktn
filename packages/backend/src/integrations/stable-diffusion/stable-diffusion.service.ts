@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PredictionServiceClient } from '@google-cloud/aiplatform';
-import { IValue } from 'google-protobuf/google/protobuf/struct_pb'; // Import IValue type
+import { IValue } from 'google-protobuf/google/protobuf/struct_pb';
 
 @Injectable()
 export class StableDiffusionService {
