@@ -1,11 +1,19 @@
 <template>
-  <router-view />
+  <router-view/>
 </template>
 
 <style lang="scss">
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   height: 100vh;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  min-height: 412px;
+  overflow: auto;
+  font-family: Montserrat, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

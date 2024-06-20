@@ -17,6 +17,7 @@ export const useGeolocationStore = defineStore('geolocation', {
           },
           (error) => console.log('error', error)
         );
+        console.log('position', position);
         return position;
       } catch (error) {
         console.error('Error getting geolocation:', error);
@@ -25,7 +26,7 @@ export const useGeolocationStore = defineStore('geolocation', {
     async setLocationName() {
       const GEO_API_KEY = process.env.VUE_APP_GEO_API_KEY;
       const location = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.lat},${this.lon}&result_type=administrative_area_level_2&key=${GEO_API_KEY}`,{method:'POST'});
-      this.locationName = (await location.json()).results[0].formatted_address;
+      this.locationName = (await location.json()).results[0]?.formatted_address;
     },
     getLocationName() {
         return this.locationName;

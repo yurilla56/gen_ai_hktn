@@ -10,11 +10,12 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
     weather: {
       description: '',
       temperature: '',
-      emojis: ''
+      emojis: '',
     },
     clothes: [],
     recommendation: '',
-    image: ''
+    image: '',
+    isAvatarLoaded: false
   }),
   actions: {
     async fetchWeatherRecommendation() {
@@ -24,7 +25,7 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/weather/recommendation');
       url.searchParams.set('lat', lat);
       url.searchParams.set('lon', lon);
-    
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -32,17 +33,17 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
           'x-api-key': apiKey,
         },
       });
-    
+
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-    
+
       return await response.json();
     },
 
     async fetchQuizzes() {
       const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/quizzes');
-    
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -50,11 +51,11 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
           'x-api-key': apiKey,
         },
       });
-    
+
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-    
+
       return await response.json();
     },
 
@@ -99,7 +100,7 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       console.log('verifyWeatherRecommendation');
       const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/weather/verify');
       const dataString = JSON.stringify(data);
-    
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -108,11 +109,11 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
         },
         body: dataString
       });
-    
+
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-    
+
       return await response.json();
     },
     async getAvatar() {
@@ -122,16 +123,16 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       // const weatherDescription = this.weather.description;
       // const prompt = {
       //   prompt: `You will receive avatar description, that depicts outlook of avatar, also you will get list of clothes, in which avatar must be dressed up, also you will get weather conditions for background
-      //   Avatar description: ${avatarDescription}  
+      //   Avatar description: ${avatarDescription}
       //   List of clothes: ${clothesString}
       //   Weather conditions: ${weatherDescription}
       //   You must draw image based on all this information`
       // };
       const prompt = {
-          prompt: 'You will receive avatar description, that depicts outlook of avatar, also you will get list of clothes, in which avatar must be dressed up, also you will get weather conditions for background \n Avatar description: this is a cartoon drawn penguin \n List of clothes: t-shirt, shorts, jacket \n Weather conditions: The weather in Fethiye is clear sky with a temperature of 22.97°C and humidity of 45% \n You must draw image based on all this information'
+        prompt: 'You will receive avatar description, that depicts outlook of avatar, also you will get list of clothes, in which avatar must be dressed up, also you will get weather conditions for background \n Avatar description: this is a cartoon drawn penguin \n List of clothes: t-shirt, shorts, jacket \n Weather conditions: The weather in Fethiye is clear sky with a temperature of 22.97°C and humidity of 45% \n You must draw image based on all this information'
       };
       const dataString = JSON.stringify(prompt);
-    
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -142,12 +143,15 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
         body: dataString
       });
       const test = await response.json();
-    
+
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
-    
+
       return test;
+    },
+    setIsAvatarLoaded(value) {
+      this.isAvatarLoaded = value;
     },
   },
 })
