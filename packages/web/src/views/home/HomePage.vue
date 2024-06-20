@@ -31,7 +31,8 @@
       </div>
       <div class="main-block">
         <div class="avatar">
-          <img v-if="imageSrc" :src="imageSrc" alt="text" />
+          <!-- <img v-if="imageSrc" :src="imageSrc" alt="text" /> -->
+          <img src="../../assets/images/summer-pinguin.png" alt="text" />
         </div>
         <div class="action-icons">
           <div @click="play(weatherText)">
@@ -114,6 +115,7 @@ watch(imageSrc, (newVal) => {
   if (newVal.length > 0) {
     isAvatarLoaded.value = true;
   }
+  console.log('imageSrc', imageSrc.value);
 })
 </script>
 
