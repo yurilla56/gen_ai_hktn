@@ -1,7 +1,7 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiSecurity } from '@nestjs/swagger';
 import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
-import { StableDiffusionService } from 'src/integrations/stable-diffusion/stable-diffusion.service';
+import { StableDiffusionService } from '../..//integrations/stable-diffusion/stable-diffusion.service';
 import { PromptBodyDto } from './dtos/prompt';
 
 @ApiTags('Stable Diffusion')
