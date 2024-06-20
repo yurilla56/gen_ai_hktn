@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiSecurity } from '@nestjs/swagger';
-import { QuizService } from './quize.service';
-import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
+import { QuizService } from './quiz.service';
+import { ApiKeyGuard } from '../../common/guards/api-key.guard';
 
 @ApiTags('Quizzes')
 @ApiSecurity('x-api-key')

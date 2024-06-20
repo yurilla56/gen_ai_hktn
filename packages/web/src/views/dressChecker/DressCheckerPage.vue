@@ -66,10 +66,14 @@
   }
 
   const updateStatuses = (clothingItems, updateObject) => {
+    console.log('clothingItems', clothingItems.value);
+    console.log('updateObject', updateObject);
     for (const item of clothingItems.value) {
-        if (item.name in updateObject) { // Use 'in' operator
-            item.status = updateObject[item.name];
-        }
+      console.log('item.name', item.name);
+      if (item.name in updateObject) {
+        console.log('item.name in updateObject');
+        item.status = updateObject[item.name];
+      }
     }
     showBadge.value = true;
     setTimeout(() => {
@@ -78,12 +82,14 @@
   };
 
   const getImageData = (async (data) => {
-    let requestData = {
-        clothes: weatherStore.clothes,
-        image: data
-    };
-    const responce = await weatherStore.verifyWeatherRecommendation(requestData);
-    updateStatuses(clothingItems, responce.clothes);
+    // let requestData = {
+    //     clothes: weatherStore.clothes,
+    //     image: data
+    // };
+    console.log('data', data);
+    // const responce = await weatherStore.verifyWeatherRecommendation(requestData);
+    // updateStatuses(clothingItems, responce.clothes);
+    updateStatuses(clothingItems, ['shorts', 't-shirt', 'sunhat']);
   });
   
   onMounted(async () => {  
