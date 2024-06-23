@@ -19,7 +19,7 @@
           <p>Dress Checker</p>
         </div>
         <div class="other-apps">
-          <div class="learning-app">
+          <div class="learning-app" @click="goToPage('quizzes')">
             <img alt="learning app" src="../../assets/images/learning-icon.svg" />
             <p>Learning</p>
           </div>
@@ -68,7 +68,7 @@ const emojis = computed(() => weatherStore.weather.emojis);
 const imageSrc = computed(() => weatherStore.image);
 
 const showHome = () => {
-  isAvatarLoaded.value = false;
+  isAvatarLoaded.value = true;
 };
 
 const synth = ref(null);
@@ -115,7 +115,6 @@ watch(imageSrc, (newVal) => {
   if (newVal.length > 0) {
     isAvatarLoaded.value = true;
   }
-  console.log('imageSrc', imageSrc.value);
 })
 </script>
 

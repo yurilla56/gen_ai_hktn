@@ -1,7 +1,7 @@
 <template>
   <div class="dress-checker">
     <div class="features">
-    <div class="back-btn" @click="goToPage('')">
+    <div class="back-btn" @click="goToPage('/')">
         <img alt="Dress Checker" src="../../assets/images/arrow-back.svg" />
     </div>
     <div class="left-blocks">
@@ -62,16 +62,12 @@
   }
   
   const goToPage = (page) => {
-    router.push(`/${page}`)
+    router.push(`${page}`)
   }
 
   const updateStatuses = (clothingItems, updateObject) => {
-    console.log('clothingItems', clothingItems.value);
-    console.log('updateObject', updateObject);
     for (const item of clothingItems.value) {
-      console.log('item.name', item.name);
       if (item.name in updateObject) {
-        console.log('item.name in updateObject');
         item.status = updateObject[item.name];
       }
     }
@@ -82,14 +78,20 @@
   };
 
   const getImageData = (async (data) => {
-    // let requestData = {
-    //     clothes: weatherStore.clothes,
-    //     image: data
-    // };
-    console.log('data', data);
-    // const responce = await weatherStore.verifyWeatherRecommendation(requestData);
-    // updateStatuses(clothingItems, responce.clothes);
-    updateStatuses(clothingItems, ['shorts', 't-shirt', 'sunhat']);
+    let requestData = {
+        clothes: weatherStore.clothes,
+        image: data
+    };
+    let responce = null;
+    try {
+      responce = await weatherStore.verifyWeatherRecommendation(requestData);
+      updateStatuses(clothingItems, responce.clothes);
+    } catch (error) {
+      console.error('Error fetching weather recommendation:', error);
+      updateStatuses(clothingItems, ['shorts', 't-shirt', 'sunhat']);
+    }
+    
+    // console.log('Image Data', data);
   });
   
   onMounted(async () => {  

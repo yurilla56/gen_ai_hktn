@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiSecurity } from '@nestjs/swagger';
-import { QuizService } from './quize.service';
+import { QuizService } from './quiz.service';
 import { ApiKeyGuard } from '../../common/guards/api-key.guard';
 
 @ApiTags('Quizzes')

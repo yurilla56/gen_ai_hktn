@@ -1,7 +1,7 @@
 import { GenerativeModel, GoogleGenerativeAI, InlineDataPart } from '@google/generative-ai';
+import { PromptsService } from '../../features/weather/services/prompts.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PromptsService } from '../../features/weather/services/prompts.service';
 
 @Injectable()
 export class GeminiService {
