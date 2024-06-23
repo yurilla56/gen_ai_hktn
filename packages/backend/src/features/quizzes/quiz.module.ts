@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { QuizController } from './quize.controller';
-import { QuizService } from './quize.service';
+import { QuizController } from './quiz.controller';
+import { QuizService } from './quiz.service';
 
 @Module({
   imports: [],
