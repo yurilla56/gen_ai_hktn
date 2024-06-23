@@ -21,7 +21,7 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       const geolocationStore = useGeolocationStore();
       const lat = geolocationStore.lat;
       const lon = geolocationStore.lon;
-      const url = new URL('https://refined-legend-421215.uc.r.appspot.com/api/weather/recommendation');
+      const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/weather/recommendation');
       url.searchParams.set('lat', lat);
       url.searchParams.set('lon', lon);
     
@@ -39,42 +39,65 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
     
       return await response.json();
     },
+
+    async fetchQuizzes() {
+      const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/quizzes');
+    
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'x-api-key': apiKey,
+        },
+      });
+    
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+    
+      return await response.json();
+    },
+
     async requestWeather() {
       // let clothesRetrieved = false;
-      // let data;
+      let data;
 
       // while (!clothesRetrieved) {
-      //   try {
-      //     // data = await this.fetchWeatherRecommendation();
+        try {
+          data = await this.fetchWeatherRecommendation();
 
-      //     if (data.clothes.length > 0) {
-      //       clothesRetrieved = true;
-      //     }
-      //   } catch (error) {
-      //     console.error('Error fetching weather recommendation:', error);
-      //   }
+          // if (data.clothes.length > 0) {
+          //   clothesRetrieved = true;
+          // }
+        } catch (error) {
+          console.error('Error fetching weather recommendation:', error);
+        }
       // }
 
-      const data = {
+      // const testAvatar = await this.getAvatar();
+      // console.log('testAvatar', testAvatar);
+
+      const dataDummy = {
         clothes: ['shorts', 't-shirt', 'sunhat', 'sunglasses'],
         weather: {
-          description: 'clear sky',
-          temperature: 22.97,
+          description: 'Hi there! Today in Fethiye, the weather is very sunny and warm. It feels like a big, cozy hug from the sun! The temperature is quite hot, just like a warm bath. The sky is clear with no clouds. Have fun and stay cool!',
+          temperature: 31,
           emojis: '☀️'
         },
-        recommendation: 'You should wear a t-shirt and shorts, and don\'t forget your sunglasses and sunhat!',
+        recommendation: 'You should wear a t-shirt and shorts, and don\'t forget your sunglasses, sunhat and to apply sunscreen! ',
       };
 
-      this.weather.description = data.weather.description ?? 'clear sky';
-      this.weather.temperature = data.weather.temperature + '°C';
-      this.weather.emojis = data.weather.emojis;
+      this.weather.description = data?.weather?.description ?? dataDummy.weather.description;
+      this.weather.temperature = (data?.weather?.temperature ?? dataDummy.weather.temperature) + '°C';
+      this.weather.emojis = data?.weather?.emojis ?? dataDummy.weather.emojis;
       // this.image = data.image;
       this.image = fallbackAvatar;
-      this.clothes = data.clothes;
-      this.recommendation = data.recommendation;
+      this.clothes = data?.clothes ?? dataDummy.clothes;
+      this.recommendation = data?.recommendation ?? dataDummy.recommendation;
     },
     async verifyWeatherRecommendation(data) {
-      const url = new URL('https://refined-legend-421215.uc.r.appspot.com/api/weather/verify');
+      console.log('verifyWeatherRecommendation');
+      const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/weather/verify');
       const dataString = JSON.stringify(data);
     
       const response = await fetch(url, {
@@ -93,7 +116,7 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       return await response.json();
     },
     async getAvatar() {
-      const url = new URL('https://refined-legend-421215.uc.r.appspot.com/api/stable-diffusion/predict');
+      const url = new URL('https://or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com/api/stable-diffusion/predict');
       // const avatarDescription = 'this is a cartoon drawn penguin';
       // const clothesString = this.clothes.join(', ');
       // const weatherDescription = this.weather.description;
