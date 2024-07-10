@@ -78,21 +78,21 @@
 </template>
 
 <script setup>
-import {useRouter} from 'vue-router';
-import {ref, onMounted, reactive, computed} from 'vue';
-import CustomSelect from "@/components/CustomSelect.vue";
+import { useRouter } from 'vue-router';
+import { ref, onMounted, reactive, computed } from 'vue';
+import CustomSelect from '@/components/CustomSelect.vue';
 import localStorageService from '../../../service/utils/localStorageService';
 
 const router = useRouter();
 
 const genders = [
-  {value: 'male', label: 'Male'},
-  {value: 'female', label: 'Female'}
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
 ];
 
 const languages = [
-  {value: 'english', label: 'English'},
-  {value: 'spanish', label: 'Spanish'}
+  { value: 'english', label: 'English' },
+  { value: 'spanish', label: 'Spanish' },
 ];
 
 const defaultLanguage = languages[0];
@@ -103,25 +103,22 @@ const user = reactive({
   age: null,
   location: {
     country: null,
-    city: null
+    city: null,
   },
-  language: defaultLanguage.label
+  language: defaultLanguage.label,
 });
 
-const ages = Array.from({length: 10}, (_, i) => {
+const ages = Array.from({ length: 10 }, (_, i) => {
       const value = i + 3;
-      return {value};
-    }
+      return { value };
+    },
   )
 ;
 
 const countries = ref([]);
 const cities = ref([]);
 
-const isDisabled = computed(() => {
-  console.log('user: ', user.name, user.gender, user.age, user.location.country, user.location.city, !user.name || !user.gender || !user.age || !user.location.country || !user.location.city)
-  return !user.name || !user.gender || !user.age || !user.location.country || !user.location.city
-});
+const isDisabled = computed(() => !user.name || !user.gender || !user.age || !user.location.country || !user.location.city);
 
 onMounted(async () => {
   await getCountryList();
@@ -131,22 +128,22 @@ const getCountryList = async () => {
   try {
     const response = await fetch('https://restcountries.com/v3.1/all');
     const data = await response.json();
-    countries.value = data.map(country => ({value: country.cca2, label: country.name.common}));
+    countries.value = data.map(country => ({ value: country.cca2, label: country.name.common })).sort(sortByAlphabet);
   } catch (error) {
     console.error('Error fetching countries: ', error);
   }
-}
+};
 
 const getCityList = async (newCountry) => {
   try {
     const response = await fetch(`http://api.geonames.org/searchJSON?country=${newCountry.value}&maxRows=10&username=bomboloo`);
     const data = await response.json();
-    cities.value = data.geonames.map(city => ({value: city.geonameId, label: city.name}));
+    cities.value = data.geonames.map(city => ({ value: city.geonameId, label: city.name })).sort(sortByAlphabet);
   } catch (error) {
     console.error('Error fetching cities: ', error);
     cities.value = [];
   }
-}
+};
 
 const handleCountryChange = async (newCountry) => {
   user.location.country = newCountry.label;
@@ -164,20 +161,20 @@ const resetSelection = () => {
 };
 
 const goToPage = (page) => {
-  router.push(`/${page}`)
-}
+  router.push(`/${page}`);
+};
 
 const handleGenderChange = (newGender) => {
   user.gender = newGender.label;
-}
+};
 
 const handleAgeChange = (newAge) => {
   user.age = newAge.value;
-}
+};
 
 const handleLanguageChange = (newLanguage) => {
   user.language = newLanguage.label;
-}
+};
 
 const validateName = () => {
   const namePattern = /^[a-zA-Z]{3,}$/;
@@ -189,6 +186,8 @@ const validateName = () => {
 const submit = () => {
   localStorageService.setUser(user);
 };
+
+const sortByAlphabet = (a, b) => a.label.localeCompare(b.label);
 
 </script>
 
