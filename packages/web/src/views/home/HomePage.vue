@@ -2,7 +2,7 @@
   <div class="home">
     <div v-if="isAvatarLoaded" class="features">
       <div class="left-blocks">
-        <div class="settings">
+        <div class="settings" @click="goToPage('settings')">
           <img alt="Dress Checker" src="../../assets/images/settings.svg" />
         </div>
         <div class="weather">
@@ -57,7 +57,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 
-const isAvatarLoaded = ref(false);
 const geolocationStore = useGeolocationStore();
 const lat = computed(() => geolocationStore.lat);
 const locationName = computed(() => geolocationStore.locationName);
@@ -66,9 +65,10 @@ const weatherText = computed(() => weatherStore.weather.description);
 const temperature = computed(() => weatherStore.weather.temperature);
 const emojis = computed(() => weatherStore.weather.emojis);
 const imageSrc = computed(() => weatherStore.image);
+const isAvatarLoaded = computed(() => weatherStore.isAvatarLoaded);
 
 const showHome = () => {
-  isAvatarLoaded.value = true;
+  weatherStore.setIsAvatarLoaded(false);
 };
 
 const synth = ref(null);
@@ -107,13 +107,13 @@ watch(lat, async () => {
   await weatherStore.requestWeather();
 
   if (imageSrc.value.length > 0) {
-    isAvatarLoaded.value = true;
+    weatherStore.setIsAvatarLoaded(true);
   }
 });
 
 watch(imageSrc, (newVal) => {
   if (newVal.length > 0) {
-    isAvatarLoaded.value = true;
+    weatherStore.setIsAvatarLoaded(true);
   }
 })
 </script>
@@ -250,4 +250,11 @@ watch(imageSrc, (newVal) => {
     }
   }
 }
+
+@media screen and (max-height: 750px) {
+  .other-apps img, .dress-checker img {
+    height: 45%;
+  }
+}
+
 </style>
