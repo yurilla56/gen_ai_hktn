@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-select" :class="[{'active': isClassActive}]">
+  <div class="custom-select" :class="[{'active': isClassActive}, { disabled }]">
     <button
       ref="selectBtn"
       class="select-button"
@@ -7,6 +7,7 @@
       aria-labelledby="select button"
       aria-haspopup="listbox"
       :aria-expanded="ariaExpanded"
+      :disabled="disabled"
       aria-controls="select-dropdown"
       @click.stop="handleButtonClick"
     >
@@ -29,36 +30,44 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue'
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 export default defineComponent({
-  name: "CustomSelect",
+  name: 'CustomSelect',
   props: {
     options: {
       type: Array,
-      required: true
+      required: true,
     },
     placeholder: {
       type: String,
-      default: ''
+      default: '',
     },
-    defaultValue: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   emits: ['update:value'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const isClassActive = ref(false);
     const ariaExpanded = computed(() => !isClassActive.value);
     const selectedOption = ref(props.placeholder);
     const selectedLabel = ref(props.placeholder);
-    const selectBtn  = ref<HTMLElement | null>(null);
+    const selectBtn = ref<HTMLElement | null>(null);
 
-    watch(() => props.defaultValue, (newVal) => {
-      if (newVal) {
+    watch(() => props.value, (newVal) => {
+
+      if (!newVal) {
+        selectedOption.value = props.placeholder;
+        selectedLabel.value = props.placeholder;
+      } else {
         selectedOption.value = newVal.value;
-        selectedLabel.value = newVal.label || newVal.value;
+        selectedLabel.value = newVal.label ?? newVal.value;
       }
     }, { immediate: true });
 
@@ -76,7 +85,7 @@ export default defineComponent({
       if (event.target !== selectBtn?.value && !selectBtn?.value?.contains(event.target)) {
         isClassActive.value = false;
       }
-    }
+    };
 
     const updateValue = (event) => {
       const option = props.options.find(option => option.value === event.target.value);
@@ -91,7 +100,7 @@ export default defineComponent({
       } else {
         document.removeEventListener('click', closeDropdown);
       }
-    }
+    };
 
     const selectOption = (option) => {
       if (selectedOption.value === option.value) {
@@ -101,18 +110,18 @@ export default defineComponent({
       selectedLabel.value = option.label || option.value;
       isClassActive.value = false;
       emit('update:value', option);
-    }
+    };
 
     const isSelectedOption = (option) => selectedOption.value === option.value;
 
     const selectedValueStyles = computed(() => {
       if (selectedOption.value === props.placeholder) {
         return {
-          color: '#8e8e8e'
+          color: '#8e8e8e',
         };
       }
 
-      return {color: '#000'};
+      return { color: '#000' };
     });
 
     return {
@@ -124,9 +133,9 @@ export default defineComponent({
       updateValue,
       handleButtonClick,
       selectOption,
-      isSelectedOption
+      isSelectedOption,
     };
-  }
+  },
 });
 </script>
 
@@ -240,6 +249,15 @@ export default defineComponent({
   opacity: 1;
   visibility: visible;
   transform: scaleY(1);
+}
+
+.custom-select.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.select-button.disabled {
+  cursor: not-allowed;
 }
 
 </style>

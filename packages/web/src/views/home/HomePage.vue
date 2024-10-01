@@ -59,7 +59,7 @@ const router = useRouter()
 
 const geolocationStore = useGeolocationStore();
 const lat = computed(() => geolocationStore.lat);
-const locationName = computed(() => geolocationStore.locationName);
+const locationName = computed(() => geolocationStore.locationName ?? extractWeatherRecommendationLocation());
 const weatherStore = useWeatherRecomendationsStore();
 const weatherText = computed(() => weatherStore.weather.description);
 const temperature = computed(() => weatherStore.weather.temperature);
@@ -96,6 +96,17 @@ const play = (text) => {
 
 const goToPage = (page) => {
   router.push(`/${page}`)
+}
+
+const extractWeatherRecommendationLocation = () => {
+  const prefix = 'The weather in ';
+  const text = weatherText.value ?? '';
+
+  if (text.startsWith(prefix)) {
+    return text.substring(prefix.length).split(' ')[0].trim();
+  }
+
+  return null;
 }
 
 onMounted(async () => {

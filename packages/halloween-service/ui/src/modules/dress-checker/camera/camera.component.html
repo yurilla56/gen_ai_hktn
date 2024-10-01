@@ -1,0 +1,24 @@
+<div class="wrapper" [ngClass]="{ 'photo-taken': isPhotoTaken }">
+  <div class="video-container">
+    <video #camera [style.display]="isCameraOpen ? 'block' : 'none'" autoplay playsinline class="camera-video"></video>
+    <canvas #canvas [style.display]="isPhotoTaken ? 'block' : 'none'" class="canvas-photo"></canvas>
+  </div>
+
+  <div *ngIf="!isCameraOpen" class="show-camera">
+    <div class="no-camera-btn">
+      <img src="../../../assets/no-photography.svg" title="Turn On Camera">
+    </div>
+    <div class="turn-on-camera-btn" (click)="toggleCamera()">
+      <span>Turn On Camera</span>
+    </div>
+  </div>
+
+  <div *ngIf="isCameraOpen" class="interactive-buttons">
+    <div class="take-photo" (click)="takePhoto()">
+      <img src="../../../assets/camera-btn.png" alt="Snap!" />
+    </div>
+    <div class="take-photo" (click)="toggleCamera()">
+      <img style="color: white;" src="../../../assets/no-photography.svg" title="Toggle Camera On/Off">
+    </div>
+  </div>
+</div>
