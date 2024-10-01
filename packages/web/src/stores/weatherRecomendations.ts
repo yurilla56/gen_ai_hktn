@@ -93,7 +93,7 @@ export const useWeatherRecomendationsStore = defineStore('weatherRecomendations'
       this.weather.emojis = data?.weather?.emojis ?? dataDummy.weather.emojis;
       // this.image = data.image;
       this.image = fallbackAvatar;
-      this.clothes = data?.clothes ?? dataDummy.clothes;
+      this.clothes = data?.clothes.length ? data.clothes : dataDummy.clothes;
       this.recommendation = data?.recommendation ?? dataDummy.recommendation;
     },
     async verifyWeatherRecommendation(data) {

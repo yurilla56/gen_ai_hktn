@@ -3,7 +3,16 @@
     <div class="logo" @click="goToPage('')">
       <img src="../../assets/images/logo_small.svg" alt="bomboloo">
     </div>
-    <h1>Settings</h1>
+    <div class="header">
+      <h1>Settings</h1>
+      <img
+        src="../../assets/images/delete-40.svg"
+        alt="delete"
+        title="Reset Settings"
+        class="delete-icon"
+        @click="resetSelection"
+      >
+    </div>
     <div class="form">
       <input
         v-model="user.name"
@@ -16,6 +25,7 @@
 
       <CustomSelect
         :options="genders"
+        :value="user.gender"
         placeholder="Gender"
         class="gender"
         @update:value="handleGenderChange"
@@ -23,55 +33,39 @@
 
       <CustomSelect
         :options="ages"
+        :value="user.age"
         placeholder="Age"
         class="age"
         @update:value="handleAgeChange"
       ></CustomSelect>
 
-      <div class="location">
-        <CustomSelect
-          v-if="!user.location.country"
-          :options="countries"
-          placeholder="Select country"
-          @update:value="handleCountryChange"
-        ></CustomSelect>
+      <CustomSelect
+        class="country"
+        :options="countries"
+        :value="user.location.country"
+        placeholder="Select country"
+        @update:value="handleCountryChange"
+      ></CustomSelect>
 
-        <CustomSelect
-          v-if="user.location.country && !user.location.city"
-          :options="cities"
-          placeholder="Select city"
-          @update:value="handleCityChange"
-        ></CustomSelect>
-
-        <div
-          v-if="user.location.country && user.location.city"
-          class="location-input-wrapper">
-          <input
-            id="location"
-            type="text"
-            :value="`${user.location.country}, ${user.location.city}`"
-            readonly
-          >
-
-          <div
-            v-if="user.location.country && user.location.city"
-            class="reset-icon"
-            @click="resetSelection">
-            <img src="../../assets/images/unchecked.svg" alt="delete">
-          </div>
-        </div>
-      </div>
+      <CustomSelect
+        class="city"
+        :options="cities"
+        :value="user.location.city"
+        :disabled="!user.location.country || !cities?.length"
+        placeholder="Select city"
+        @update:value="handleCityChange"
+      ></CustomSelect>
 
       <CustomSelect
         class="language"
         :options="languages"
-        :default-value="defaultLanguage"
-        placeholder="Country"
+        :value="user.language"
+        placeholder="Language"
         @update:value="handleLanguageChange"
       ></CustomSelect>
 
       <div class="submit">
-        <button :disabled="isDisabled" @click="submit">Let's Go</button>
+        <button @click="submit">Let's Go</button>
       </div>
     </div>
   </div>
@@ -79,7 +73,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import CustomSelect from '@/components/CustomSelect.vue';
 import localStorageService from '../../../service/utils/localStorageService';
 
@@ -105,7 +99,7 @@ const user = reactive({
     country: null,
     city: null,
   },
-  language: defaultLanguage.label,
+  language: defaultLanguage,
 });
 
 const ages = Array.from({ length: 10 }, (_, i) => {
@@ -118,46 +112,101 @@ const ages = Array.from({ length: 10 }, (_, i) => {
 const countries = ref([]);
 const cities = ref([]);
 
-const isDisabled = computed(() => !user.name || !user.gender || !user.age || !user.location.country || !user.location.city);
+// Disable button on condition
+// const isDisabled = computed(() => !user.name || !user.gender || !user.age || !user.location.country || !user.location.city);
 
 onMounted(async () => {
   await getCountryList();
 });
 
 const getCountryList = async () => {
+  // cities are absent for these excluded countries
+  const exclusions = [
+    'AX', 'AS', 'AQ', 'BV', 'VG', 'BQ', 'CW', 'CD', 'GF',
+    'TF', 'HM', 'FM', 'MC', 'MP', 'PS', 'BL', 'SH', 'MF',
+    'SX', 'SS', 'SJ', 'TJ', 'TV', 'UM', 'VI', 'VA', 'EH',
+  ];
+  // fix old country names in order to get their city list
+  const renameMap = { Czechia: 'Czech Republic', Eswatini: 'Swaziland' };
   try {
     const response = await fetch('https://restcountries.com/v3.1/all');
     const data = await response.json();
-    countries.value = data.map(country => ({ value: country.cca2, label: country.name.common })).sort(sortByAlphabet);
+    const filtered = data.filter(country => !exclusions.includes(country.cca2));
+    countries.value = filtered.map(country => {
+      const name = country.name.common;
+      const label = renameMap[name] ?? name;
+      return { value: country.cca2, label };
+    }).sort(sortByAlphabet);
   } catch (error) {
     console.error('Error fetching countries: ', error);
   }
 };
 
-const getCityList = async (newCountry) => {
+const getCityList = async (country) => {
   try {
-    const response = await fetch(`http://api.geonames.org/searchJSON?country=${newCountry.value}&maxRows=10&username=bomboloo`);
-    const data = await response.json();
-    cities.value = data.geonames.map(city => ({ value: city.geonameId, label: city.name })).sort(sortByAlphabet);
-  } catch (error) {
-    console.error('Error fetching cities: ', error);
-    cities.value = [];
+    const response = await fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ country: country.label }),
+    });
+
+    let data = await response.json();
+
+    if (!data) {
+      data = await secondTrialRequestForCities(country.value);
+    }
+
+    if (data && data.data && Array.isArray(data.data)) {
+      cities.value = data.data.map(city => ({ value: city, label: city })).sort(sortByAlphabet);
+    } else {
+      console.error('Unexpected response structure:', data);
+      cities.value = [];
+    }
+  } catch {
+    try {
+      const data = await secondTrialRequestForCities(country.value);
+      cities.value = data;
+    } catch (error) {
+      console.error('Error fetching cities: ', error);
+      cities.value = [];
+    }
   }
 };
 
 const handleCountryChange = async (newCountry) => {
-  user.location.country = newCountry.label;
+  user.location.country = newCountry;
   await getCityList(newCountry);
 };
 
 const handleCityChange = (newCity) => {
-  user.location.city = newCity.label;
+  user.location.city = newCity;
   console.log('user: ', user);
 };
 
+const secondTrialRequestForCities = async (iso2) => {
+  const response = await fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ iso2 }),
+  });
+
+  const data = await response.json();
+
+  return data;
+};
+
 const resetSelection = () => {
+  user.age = null;
+  user.name = null;
+  user.gender = null;
   user.location.country = null;
   user.location.city = null;
+  user.language = defaultLanguage;
+  localStorageService.removeUser();
 };
 
 const goToPage = (page) => {
@@ -165,15 +214,15 @@ const goToPage = (page) => {
 };
 
 const handleGenderChange = (newGender) => {
-  user.gender = newGender.label;
+  user.gender = newGender;
 };
 
 const handleAgeChange = (newAge) => {
-  user.age = newAge.value;
+  user.age = newAge;
 };
 
 const handleLanguageChange = (newLanguage) => {
-  user.language = newLanguage.label;
+  user.language = newLanguage;
 };
 
 const validateName = () => {
@@ -193,7 +242,7 @@ const sortByAlphabet = (a, b) => a.label.localeCompare(b.label);
 
 <style lang="scss" scoped>
 
-$form-elements: name, gender, location, age, language, submit;
+$form-elements: name, gender, country, city, age, language, submit;
 
 @each $element in $form-elements {
   .#{$element} {
@@ -206,21 +255,41 @@ $form-elements: name, gender, location, age, language, submit;
 }
 
 .settings-page {
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
   background-color: #f5f5f5;
   box-sizing: border-box;
 
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto 0.5fr 0.5fr;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+
+    h1 {
+      grid-column: 2;
+    }
+
+    .delete-icon {
+      grid-column: 4;
+      margin-left: 20px;
+      cursor: pointer;
+      width: 40px;
+    }
+  }
+
   .form {
     display: grid;
     grid-template-areas:
-      "name ."
-      "gender location"
+      "name country"
+      "gender city"
       "age language"
       "submit submit";
     grid-template-columns: 1fr 1fr;
+    align-items: baseline;
     width: 100%;
     align-self: center;
     max-width: 948px;
@@ -263,7 +332,8 @@ $form-elements: name, gender, location, age, language, submit;
   cursor: pointer;
 }
 
-.location,
+.country,
+.city,
 .language {
   display: flex;
   align-items: flex-end;
@@ -272,33 +342,6 @@ $form-elements: name, gender, location, age, language, submit;
   .custom-select {
     display: flex;
     justify-content: flex-end;
-  }
-}
-
-.location-input-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  max-width: 410px;
-  height: 56px;
-  box-sizing: border-box;
-
-  input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    padding: 10px;
-    box-sizing: border-box;
-    cursor: pointer;
-    background-color: #fff;
-
-    &:focus {
-      border-color: #007bff;
-      outline: none;
-    }
   }
 }
 
@@ -351,5 +394,4 @@ $form-elements: name, gender, location, age, language, submit;
     }
   }
 }
-
 </style>
