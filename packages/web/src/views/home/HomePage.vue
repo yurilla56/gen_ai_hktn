@@ -35,6 +35,15 @@
           <img src="../../assets/images/summer-pinguin.png" alt="text" />
         </div>
         <div class="action-icons">
+          <div>
+            <img alt="hero" src="../../assets/images/animals/buttons/penguin.svg" />
+          </div>
+          <div v-if="eventDetails" @click="goToPage('look')">
+            <img
+              alt="event-button"
+              :src="require(`@/assets/images/events/${eventDetails.toLowerCase()}/button.svg`)"
+            />
+          </div>
           <div @click="play(weatherText)">
             <img alt="Say description" src="../../assets/images/microphone-btn.png" />
           </div>
@@ -50,9 +59,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
-import { useGeolocationStore } from '../../stores/geolocation';
-import { useWeatherRecomendationsStore } from '../../stores/weatherRecomendations';
+import { ref, onMounted, computed, watch, inject } from 'vue';
+import { useGeolocationStore } from '@/stores/geolocation';
+import { useWeatherRecomendationsStore } from '@/stores/weatherRecomendations';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
@@ -66,6 +75,9 @@ const temperature = computed(() => weatherStore.weather.temperature);
 const emojis = computed(() => weatherStore.weather.emojis);
 const imageSrc = computed(() => weatherStore.image);
 const isAvatarLoaded = computed(() => weatherStore.isAvatarLoaded);
+
+const eventDetails = inject('currentEvent');
+//const eventButton = computed(() => eventDetails.button);
 
 const showHome = () => {
   weatherStore.setIsAvatarLoaded(false);
@@ -258,6 +270,7 @@ watch(imageSrc, (newVal) => {
       display: flex;
       justify-content: center;
       cursor: pointer;
+      gap: 24px;
     }
   }
 }

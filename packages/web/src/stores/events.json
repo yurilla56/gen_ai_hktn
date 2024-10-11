@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "name": "Halloween",
+      "period": {
+        "start": "08-01",
+        "end": "10-31"
+      }
+    },
+    {
+      "name": "Christmas",
+      "period": {
+        "start": "12-01",
+        "end": "12-25"
+      }
+    }
+  ]
+}
