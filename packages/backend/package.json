@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^3.19.1",
+    "@google-cloud/vertexai": "^1.2.0",
     "@google/generative-ai": "^0.8.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
