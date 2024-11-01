@@ -35,6 +35,12 @@
           <img src="../../assets/images/summer-pinguin.png" alt="text" />
         </div>
         <div class="action-icons">
+          <div @click="goToPage('look')">
+            <img
+              alt="event-button"
+              src="../../assets/images/button.svg"
+            />
+          </div>
           <div @click="play(weatherText)">
             <img alt="Say description" src="../../assets/images/microphone-btn.png" />
           </div>

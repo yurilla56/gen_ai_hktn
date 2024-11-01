@@ -2,8 +2,30 @@
   <router-view/>
 </template>
 
-<style lang="scss">
+<script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+
+const handleMessage = (event) => {
+  if (event.origin === 'https://halloween-app-dot-or2-msq-epm-gnai5-t1iylu.oa.r.appspot.com') {
+    if (event.data.action === 'navigateBack') {
+      router.push('/');
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('message', handleMessage);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('message', handleMessage);
+});
+</script>
+
+<style lang="scss">
 body {
   margin: 0;
   padding: 0;
