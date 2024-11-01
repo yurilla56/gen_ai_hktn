@@ -1,0 +1,26 @@
+<ng-container *ngIf="animals$ | async as animals">
+  <div class="arrow-back" (click)="goToParentApp()">
+    <img src="../../assets/arrow-back.svg" alt="Back">
+  </div>
+  <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center center"class="wrapper">
+    <p class="title shine-effect">
+      <span class="particle particle-1"></span>
+      <span class="particle particle-2"></span>
+      <span class="particle particle-3"></span>
+      Choose Your Pet
+    </p>
+    <div fxLayout="row" class="images" fxLayoutGap="20px">
+      <div *ngFor="let animal of animals">
+        <img
+          [id]="animal.name"
+          [src]="baseUrl + animal.image"
+          [alt]="animal.name"
+          matTooltip="{{ animal.name | titlecase }}"
+          matTooltipClass="tooltip"
+          (click)="onAnimalClick(animal.name)"
+          class="clickable-image"
+        >
+      </div>
+    </div>
+  </div>
+</ng-container>

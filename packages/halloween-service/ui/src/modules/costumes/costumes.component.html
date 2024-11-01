@@ -1,0 +1,33 @@
+<ng-container *ngIf="costumes$ | async as costumes">
+  <div class="arrow-back" (click)="goBack()">
+    <img src="../../assets/arrow-back.svg" alt="Back">
+  </div>
+
+  <div fxLayout="column" fxFlex="100%" fxLayoutAlign="center center" fxLayoutGap="20px">
+
+    <div class="icon" fxFlex="none">
+      <img src="../../assets/icon.svg" alt="Icon">
+    </div>
+
+    <div fxLayout="row wrap" fxLayoutAlign="center center" fxFlex="80" fxLayoutGap="20px" class="wrapper">
+      <div *ngFor="let costume of costumes; trackBy: trackByCostume" class="costume-card">
+        <div class="splash-effect"></div>
+        <img
+          [id]="costume.name"
+          [src]="baseUrl + costume.image"
+          [alt]="costume.name"
+          (click)="onCostumeClick(costume.name)"
+          matTooltip="{{ costume.name | titlecase }}"
+        />
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="audioPath$ | async as audio">
+    <audio #backgroundAudio autoplay loop [muted]="isMuted"></audio>
+
+    <div class="sound-icon" (click)="toggleMute()" [ngClass]="{ muted: isMuted }">
+      <mat-icon>{{ isMuted ? 'volume_off' : 'volume_up' }}</mat-icon>
+    </div>
+  </ng-container>
+</ng-container>

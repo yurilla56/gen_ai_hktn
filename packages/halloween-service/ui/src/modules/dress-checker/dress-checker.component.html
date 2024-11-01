@@ -1,0 +1,103 @@
+<ng-container *ngIf="dressPath$ | async as dressPath">
+  <div class="arrow-back" (click)="goBack()">
+    <img src="../../assets/arrow-back.svg" alt="Back">
+  </div>
+  <div fxLayout="row" fxFlex="100%" class="wrapper">
+    <div fxFlex=50% class="image-wrapper">
+      <ng-container *ngIf="dressPath.endsWith('.mp4'); else imageTemplate">
+        <div class="video-container">
+          <video width="100%" height="auto" autoplay loop muted playsinline>
+            <source [src]="baseUrl + dressPath" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </ng-container>
+
+      <ng-template #imageTemplate>
+        <img width="100%" [src]="baseUrl + dressPath" alt="Dress Image">
+      </ng-template>
+
+      <ng-container *ngIf="elements$ | async">
+        <div class="elements-wrapper">
+          <div *ngIf="!(elements$ | async)?.length" class="no-elements-container">
+            <mat-icon class="no-elements-icon">checkroom</mat-icon>
+            <div
+              class="overlay"
+              (mouseenter)="noElementsHovered = true"
+              (mouseleave)="noElementsHovered = false"
+              (click)="toggleCompleteDress()"
+            >
+              <img
+                src="../../assets/checked.svg"
+                class="hover-checkmark"
+                alt="Checked"
+                [ngClass]="{'visible': noElementsHovered}"
+              />
+              <span
+                class="tooltip"
+                *ngIf="noElementsHovered"
+                style="width: 215px; word-break: break-word; white-space: normal; text-align: center; bottom: 0;"
+              >There are no matching clothing items. Tap when completely dressed</span>
+            </div>
+          </div>
+
+          <div *ngFor="let element of (elements$ | async)" class="element-container">
+            <img
+              [src]="'../../assets/' + element.image"
+              (click)="toggleDress(element)"
+              class="element-image"
+              alt="Costume Element"
+            >
+            <ng-container *ngIf="element.isDressedOn">
+              <div class="checkmark-container">
+                <img src="../../assets/checked.svg" class="checkmark" alt="Checked"/>
+              </div>
+            </ng-container>
+
+            <div
+              class="overlay"
+              *ngIf="element.isDressedOn === false || element.isDressedOn === undefined"
+              (mouseenter)="hoveredElement = element"
+              (mouseleave)="hoveredElement = null"
+              (click)="toggleDress(element)"
+            >
+              <img
+                src="../../assets/checked.svg"
+                class="hover-checkmark"
+                alt="Checked"
+                [ngClass]="{'visible': hoveredElement === element}"
+              />
+              <span class="tooltip" *ngIf="hoveredElement === element">Tap when dressed</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxFlex=50%>
+      <div class="camera-block">
+        <div class="camera">
+          <app-camera (sendImageData)="getImageData($event)"></app-camera>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="audioPath$ | async as audio">
+    <audio #backgroundAudio autoplay loop [muted]="isMuted"></audio>
+
+    <div class="sound-icon" (click)="toggleMute()" [ngClass]="{ muted: isMuted }">
+      <mat-icon>{{ isMuted ? 'volume_off' : 'volume_up' }}</mat-icon>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="allDressed$ | async">
+    <img
+      *ngIf="isBrilliantVisible"
+      src="../../assets/brilliant.png"
+      class="brilliant-image"
+      alt="Brilliant"
+      (click)="hide()"
+    />
+  </ng-container>
+
+</ng-container>
